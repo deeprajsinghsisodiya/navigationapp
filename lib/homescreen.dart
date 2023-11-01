@@ -18,9 +18,8 @@ class _homescreenState extends State<homescreen> {
     // TODO: implement initState
     super.initState();
     notificationServices.requestNotificationPermission();
-
     notificationServices.firebaseInit();
-    // notificationServices.initLocalNotification();
+
     notificationServices.getDeviceToken().then((value) {
       print(value);
     });

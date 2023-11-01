@@ -1,5 +1,8 @@
 import 'dart:math';
-
+// <?xml version="1.0" encoding="utf-8"?>
+// <resources>
+// <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+// </resources>string.xml
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -39,7 +42,7 @@ await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
 
    void firebaseInit(){
    FirebaseMessaging.onMessage.listen((message){
-   initLocalNotification(message);
+     initLocalNotification(message);
 
      showNotification(message );
 // print(message.notification?.title.toString());
@@ -52,9 +55,10 @@ await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
 
 
      AndroidNotificationChannel channel = AndroidNotificationChannel(
-         Random.secure().nextInt(2992).toString(),
+         Random.secure().nextInt(100000).toString(),
          'High priority',
          importance: Importance.max
+
      );
 
      AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(

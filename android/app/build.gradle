@@ -54,11 +54,30 @@ android {
         versionName flutterVersionName
     }
 
+
+    signingConfigs {
+        debug {
+            storeFile file('c:/users/deepr/my-release-key.keystore')
+            storePassword '11223344'
+            keyAlias 'my-key-alias'
+            keyPassword '11223344'
+        }
+        release {
+            // Replace with the path to your keystore file
+            storeFile file('c:/users/deepr/my-release-key.keystore')
+            storePassword '11223344'
+            keyAlias 'my-key-alias'
+            keyPassword '11223344'
+        }
+    }
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.release
+            // ...
+        }
+        debug {
             signingConfig signingConfigs.debug
+            // ...
         }
     }
 }
@@ -69,4 +88,11 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
+
+    // Add the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation ('com.google.android.play:integrity:1.1.0')
 }

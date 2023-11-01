@@ -2,7 +2,7 @@
     package="com.example.navigationapp">
    <application
         android:label="navigationapp"
-        android:name="${applicationName}"
+        android:name="${com.example.navigationapp}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -20,9 +20,6 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
-            <meta-data
-                android:name="com.google.firebase.messaging.default_notification_channel_id"
-                android:value="high_importance_channel" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -33,5 +30,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="high_importance_channel" />
     </application>
 </manifest>
