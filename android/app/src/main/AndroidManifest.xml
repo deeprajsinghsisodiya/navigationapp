@@ -2,7 +2,7 @@
     package="com.example.navigationapp">
    <application
         android:label="navigationapp"
-        android:name="${com.example.navigationapp}"
+        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

@@ -113,6 +113,13 @@ void showFlutterNotification(RemoteMessage message) {
       ),
     );
   }
+  if (message != null) {
+
+    // Navigator.push(context, MaterialPageRoute(builder: (context) => Home(),));
+
+  }
+
+
 }
 
 /// Initialize the [FlutterLocalNotificationsPlugin] package.
@@ -146,6 +153,40 @@ class MessagingExampleApp extends StatelessWidget {
   }
 }
 
+
+
+class NotificationDialog extends StatelessWidget {
+  final String title;
+  final String body;
+
+  NotificationDialog({required this.title, required this.body});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(title),
+      content: Text(body),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => Home(),));
+            // Perform the action you want when the user taps "See Notification"
+            // For example, navigate to a specific screen.
+            // Navigator.push(context, MaterialPageRoute(builder: (context) => YourScreen()));
+          },
+          child: Text('See Notification'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // Close the dialog when the "Close" button is tapped.
+          },
+          child: Text('Close'),
+        ),
+      ],
+    );
+  }
+}
+
+
 // Crude counter to make messages unique
 int _messageCount = 0;
 
@@ -175,31 +216,141 @@ class _Application extends State<Application> {
   String? _token;
   String? initialMessage;
   bool _resolved = false;
+  RemoteMessage? initialMessage1;
 
   @override
-  void initState() {
-    super.initState();
 
-    FirebaseMessaging.instance.getInitialMessage().then(
-          (value) => setState(
-            () {
-          _resolved = true;
-          initialMessage = value?.data.toString();
-        },
-      ),
-    );
-
-    FirebaseMessaging.onMessage.listen(showFlutterNotification);
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
-      Navigator.pushNamed(
-        context,
-        '/message',
-        arguments: MessageArguments(message, true),
+  void showFlutterNotification1(RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+    if (notification != null && android != null && !kIsWeb) {
+      flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            channelDescription: channel.description,
+            // TODO add a proper drawable resource to android, for now using
+            //      one that already exists in example app.
+            icon: 'launch_background',
+          ),
+        ),
       );
-    });
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return NotificationDialog(title: 'asvav', body: 'dsvasd');
+          });
+      // NotificationDialog(body: 'ss',title: 'wefw',);
+
+    }
+
+
+
   }
+  // It is assumed that all messages contain a data field with the key 'type'
+  Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+    await FirebaseMessaging.instance.getInitialMessage();
+    // await FirebaseMessaging.instance.g
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    // Also handle any interaction when the app is in the background via a
+    // Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+    // FirebaseMessaging.onMessage
+
+  }
+
+  void _handleMessage(RemoteMessage message) {
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Home(),));
+    // if (message.data['type'] == 'chat') {
+    //   Navigator.pushNamed(context, '/chat',
+    //     arguments: ChatArguments(message),
+    //   );
+    // }
+  }
+
+  void initState()  {
+    super.initState();
+    FirebaseMessaging.onMessage.listen(showFlutterNotification1 );
+
+
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   print('Got a message whilst in the foreground!');
+    //   print('Message data: ${message.data}');
+    //
+    //   if (message.notification != null) {
+    //     print('Message also contained a notification: ${message.notification}');
+    //   }
+    // });
+    setupInteractedMessage();
+    // getremotemessage();
+    // FirebaseMessaging.instance.getInitialMessage().then(
+    //       (value) => setState(
+    //         () {
+    //       _resolved = true;
+    //       initialMessage = value?.data.toString();
+    //
+    //     },
+    //   ),
+    // );
+    // // getremotemessage();
+    // // RemoteMessage? initialMessage1 = await FirebaseMessaging.instance.getInitialMessage();
+    // if (initialMessage1 != null) {
+    // //   if (initialMessage1?.data['type'] == 'chat') {
+    //     Navigator.push(context, MaterialPageRoute(builder: (context) => Home(),));
+    //     // Navigator.pushNamed(
+    //     //   context,
+    //     //   '/',
+    //     //   arguments: MessageArguments(initialMessage1!, true),
+    //     // );
+    //   }
+    //   // else{
+    //   //
+    //   //   Navigator.pushNamed(
+    //   //     context,
+    //   //     '/',
+    //   //     arguments: MessageArguments(initialMessage1!, true),
+    //   //   );
+    //   // }
+    // // }
+    // void _handleMessage(RemoteMessage message) {
+    //   if (message.data['type'] == 'chat') {
+    //     Navigator.pushNamed(
+    //       context,
+    //       '/message',
+    //       arguments: MessageArguments(message, true),
+    //     );
+    //   }
+    // }
+    //
+    // FirebaseMessaging.onMessage.listen(showFlutterNotification);
+    //
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //   print('A new onMessageOpenedApp event was published!');
+    //   Navigator.push(context, MaterialPageRoute(builder: (context) => Home(),));
+    //   // Navigator.pushNamed(
+    //   //   context,
+    //   //   '/message',
+    //   //   arguments: MessageArguments(message, true),
+    //   // );
+    // });
+  }
+
+  void getremotemessage()   async {
+  initialMessage1 = await FirebaseMessaging.instance.getInitialMessage();
+}
 
   Future<void> sendPushMessage() async {
     if (_token == null) {
